@@ -1,0 +1,7 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=320
+
+A function to strip Hungarian decorations from C and C++ 
+identifier names.  In some cases, this can make code 
+easier to read.  It might also change how your program 
+runs or make it not compile, so use with caution!
+
