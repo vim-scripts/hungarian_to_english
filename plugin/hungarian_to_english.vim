@@ -30,24 +30,45 @@
 " - added removal of the m_blah notation
 " - changed to only operate on the selected range
 "
+" June 26, 2002 -> ver 1.0.2
+" - removal of aBlah, eBlah, _blah, chBlah
+" - better handling of m_bBlah and its friends
+" - fixed it so it works not just on the first offending instance
+"   of each line
+" - corrected incorrectly changing identifiers like PRINTF when
+"   ignorecase is turned on
+"
+" TODO:
+" - add all the most obnoxious instances of this curious coding
+"   convention.  See the Microsoft site for details!
+"
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 function! HungarianToEnglish() range
-    let rstr = a:firstline . "," . a:lastline 
+    let rstr = a:firstline . "," . a:lastline " haha, this looks hungarian ;)
+    " convert m_bBlah   (member variable) <- do this first so we also get rid
+    "                                        of other decorations on member variables
+    exe rstr .  "s/\\C\\<m_\\(\\a\\S*\\)\\>/\\l\\1/g"    
+    " convert _blah     (member variable) <- Maybe this is going too far...
+    exe rstr .  "s/\\C\\<_\\(\\a\\S*\\)\\>/\\l\\1/g"    
+    " convert eBlah     (enumerated type)
+    exe rstr .  "s/\\C\\<e\\(\\u\\S*\\)\\>/\\l\\1/g"
+    " convert aBlah     (array)
+    exe rstr .  "s/\\C\\<a\\(\\u\\S*\\)\\>/\\l\\1/g"
     " convert uiBlah    (unsigned int)
-    exe rstr .  "s/\\<ui\\(\\u\\S*\\)\\>/\\l\\1"
+    exe rstr .  "s/\\C\\<ui\\(\\u\\S*\\)\\>/\\l\\1/g"
     " convert bBlah     (boolean or byte, who knows?)
-    exe rstr .  "s/\\<b\\(\\u\\S*\\)\\>/\\l\\1"    
+    exe rstr .  "s/\\C\\<b\\(\\u\\S*\\)\\>/\\l\\1/g"    
     " convert iBlah     (integer)
-    exe rstr .  "s/\\<i\\(\\u\\S*\\)\\>/\\l\\1"    
+    exe rstr .  "s/\\C\\<i\\(\\u\\S*\\)\\>/\\l\\1/g"    
     " convert pBlah     (pointer)
-    exe rstr .  "s/\\<p\\(\\u\\S*\\)\\>/\\l\\1"    
+    exe rstr .  "s/\\C\\<p\\(\\u\\S*\\)\\>/\\l\\1/g"    
     " convert szBlah    (string terminated by a zero)
-    exe rstr .  "s/\\<sz\\(\\u\\S*\\)\\>/\\l\\1"    
+    exe rstr .  "s/\\C\\<sz\\(\\u\\S*\\)\\>/\\l\\1/g"    
     " convert lpszBlah  (long pointer to a string terminated by a zero)
-    exe rstr .  "s/\\<lpsz\\(\\u\\S*\\)\\>/\\l\\1"    
-    " convert m_blah    (member variable)
-    exe rstr .  "s/\\<m_\\(\\a\\S*\\)\\>/_\\l\\1"    
+    exe rstr .  "s/\\C\\<lpsz\\(\\u\\S*\\)\\>/\\l\\1/g"    
+    " convert chBlah    (character)
+    exe rstr .  "s/\\C\\<ch\\(\\u\\S*\\)\\>/\\l\\1/g"    
 endfunction
 
 " Change <F4> to your favorite Hungarian-removal key combo!
